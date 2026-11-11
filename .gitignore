@@ -1,0 +1,11 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets and private data
+.env
+.streamlit/secrets.toml
+category_cache.json
+*.csv
+!sample_statement.csv
