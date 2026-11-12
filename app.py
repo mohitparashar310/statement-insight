@@ -58,7 +58,7 @@ if st.button("Write my summary"):
     except Exception as e:
         st.error(f"Couldn't write the summary ({type(e).__name__}). Try again in a minute.")
 
-        
+
 # ---- 3. Headline numbers ----------------------------------------------------
 st.subheader(s["period"])
 c1, c2, c3, c4 = st.columns(4)
@@ -89,5 +89,6 @@ st.dataframe(
 with st.expander("All transactions"):
     picked = st.multiselect("Filter by category", sorted(df["category"].unique()))
     view = df[df["category"].isin(picked)] if picked else df
-    st.dataframe(view[[df["date"].dt.date, "narration", "merchant", "category", "withdrawal", "deposit"]],
+    view = view.assign(date=view["date"].dt.date)
+    st.dataframe(view[["date", "narration", "merchant", "category", "withdrawal", "deposit"]],
                  hide_index=True, use_container_width=True)
