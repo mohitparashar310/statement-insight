@@ -49,6 +49,16 @@ except Exception as e:
     st.error(f"Categorization failed ({type(e).__name__}). If it's a rate limit, wait a minute and try again.")
     st.stop()
 
+# ---- 5. AI summary (one LLM call, only when asked) --------------------------
+st.markdown("**AI summary**")
+if st.button("Write my summary"):
+    try:
+        with st.spinner("Writing..."):
+            st.markdown(narrate(s))
+    except Exception as e:
+        st.error(f"Couldn't write the summary ({type(e).__name__}). Try again in a minute.")
+
+        
 # ---- 3. Headline numbers ----------------------------------------------------
 st.subheader(s["period"])
 c1, c2, c3, c4 = st.columns(4)
@@ -73,18 +83,11 @@ st.dataframe(
     hide_index=True, use_container_width=True,
 )
 
-# ---- 5. AI summary (one LLM call, only when asked) --------------------------
-st.markdown("**AI summary**")
-if st.button("Write my summary"):
-    try:
-        with st.spinner("Writing..."):
-            st.markdown(narrate(s))
-    except Exception as e:
-        st.error(f"Couldn't write the summary ({type(e).__name__}). Try again in a minute.")
+
 
 # ---- 6. Every transaction ---------------------------------------------------
 with st.expander("All transactions"):
     picked = st.multiselect("Filter by category", sorted(df["category"].unique()))
     view = df[df["category"].isin(picked)] if picked else df
-    st.dataframe(view[["date", "narration", "merchant", "category", "withdrawal", "deposit"]],
+    st.dataframe(view[[df["date"].dt.date, "narration", "merchant", "category", "withdrawal", "deposit"]],
                  hide_index=True, use_container_width=True)
